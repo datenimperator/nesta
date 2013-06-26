@@ -79,7 +79,7 @@ module Nesta
       set_from_config(:title, :subtitle, :author)
       @articles = Page.find_articles.select { |a| a.date && !a.draft? }[0..9]
       dates = @articles.map(&:date)
-      last_updated = (dates.nil? || dates.empty?) ? Time.now : dates.max.xmlschema
+      last_updated = (dates.nil? || dates.empty?) ? Time.now : dates.max
 
       builder do |xml|
         xml.feed :xmlns => "http://www.w3.org/2005/Atom" do
@@ -89,7 +89,7 @@ module Nesta
           xml.id atom_id
           xml.link :href=>path_to('/articles.xml', true), :rel=>'self'
           xml.link :href=>path_to('/', true), :rel=>'alternate'
-          xml.updated last_updated
+          xml.updated last_updated.xmlschema
           unless @author.nil? || @author.empty?
             xml.author do
               %w{name uri email}.each do |att|
