@@ -141,10 +141,9 @@ module Nesta
       parts = params[:splat].map { |p| p.sub(/\/$/, '') }
       @page = Nesta::Page.find_by_path(File.join(parts))
       raise Sinatra::NotFound if @page.nil?
-      last_modified @page.mtime
       @title = @page.title
       set_from_page(:description, :keywords)
-      cache haml(@page.template, :layout => @page.layout)
+      haml(@page.template, :layout => @page.layout)
     end
   end
 end
