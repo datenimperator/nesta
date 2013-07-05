@@ -78,7 +78,7 @@ module Nesta
       content_type :xml, :charset => 'utf-8'
       set_from_config(:title, :subtitle, :author)
       @articles = Page.find_articles.select { |a| a.date && !a.draft? }[0..9]
-      dates = @articles.map(&:date)
+      dates = @articles.map(&:last_modified)
       last_updated = (dates.nil? || dates.empty?) ? Time.now : dates.max
 
       builder do |xml|
@@ -101,7 +101,7 @@ module Nesta
             xml.entry do
               xml.id atom_id(article)
               xml.title article.heading
-              xml.updated article.date.xmlschema
+	      xml.updated article.last_modified.xmlschema
               xml.published article.date.xmlschema
               xml.link :href => path_to(article.path, true), :rel => 'alternate'
               xml.summary article.summary, :type=>'html'
