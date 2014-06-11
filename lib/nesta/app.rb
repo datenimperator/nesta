@@ -4,7 +4,6 @@ require 'sass'
 
 require File.expand_path('../nesta', File.dirname(__FILE__))
 require File.expand_path('env', File.dirname(__FILE__))
-require File.expand_path('cache', File.dirname(__FILE__))
 require File.expand_path('config', File.dirname(__FILE__))
 require File.expand_path('models', File.dirname(__FILE__))
 require File.expand_path('helpers', File.dirname(__FILE__))
@@ -16,16 +15,18 @@ Encoding.default_external = 'utf-8' if RUBY_VERSION =~ /^1.9/
 
 module Nesta
   class App < Sinatra::Base
-    register Sinatra::Cache
-
     set :root, Nesta::Env.root
     set :views, File.expand_path('../../views', File.dirname(__FILE__))
-    set :cache_enabled, Config.cache
-    set :haml, { :format => :html5 }
+    set :haml, { format: :html5 }
 
     helpers Overrides::Renderers
     helpers Navigation::Renderers
     helpers View::Helpers
+
+    def cache(content)
+      Nesta.deprecated('cache', "it's no longer required - remove it from app.rb")
+      content
+    end
 
     before do
       if request.path_info =~ Regexp.new('./$')
@@ -48,7 +49,7 @@ module Nesta
     Overrides.load_theme_app
 
     get '/robots.txt' do
-      content_type 'text/plain', :charset => 'utf-8'
+      content_type 'text/plain', charset: 'utf-8'
       <<-EOF
 # robots.txt
 # See http://en.wikipedia.org/wiki/Robots_exclusion_standard
@@ -56,10 +57,9 @@ module Nesta
     end
 
     if Config.handle_assets
-
       get '/css/:sheet.css' do
-        content_type 'text/css', :charset => 'utf-8'
-        cache stylesheet(params[:sheet].to_sym)
+        content_type 'text/css', charset: 'utf-8'
+        stylesheet(params[:sheet].to_sym)
       end
 
       get %r{/attachments/([\w/.@-]+)} do |file|
@@ -67,15 +67,13 @@ module Nesta
         if file =~ /\.\.\//
           not_found
         else
-          last_modified File.mtime(file)
-          send_file(file, :disposition => nil)
+          send_file(file, disposition: nil)
         end
       end
-
     end
 
     get '/articles.xml' do
-      content_type :xml, :charset => 'utf-8'
+      content_type :xml, charset: 'utf-8'
       set_from_config(:title, :subtitle, :author)
       @articles = Page.find_articles.select { |a| a.date && !a.draft? }[0..9]
       dates = @articles.map(&:last_modified)
@@ -116,7 +114,7 @@ module Nesta
     end
 
     get '/sitemap.xml' do
-      content_type :xml, :charset => 'utf-8'
+      content_type :xml, charset: 'utf-8'
       @pages = Page.find_all.reject do |page|
         page.draft? or page.flagged_as?('skip-sitemap')
       end
@@ -143,7 +141,7 @@ module Nesta
       raise Sinatra::NotFound if @page.nil?
       @title = @page.title
       set_from_page(:description, :keywords)
-      haml(@page.template, :layout => @page.layout)
+      haml(@page.template, layout: @page.layout)
     end
   end
 end

@@ -7,7 +7,7 @@ group :development do
   gem 'guard-ctags-bundler'
   gem 'guard-livereload'
   gem 'rb-readline'
-  gem 'ZenTest'
+  # gem 'ZenTest'
 end
 
 group :test do

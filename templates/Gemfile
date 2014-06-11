@@ -6,7 +6,7 @@ gem 'redcarpet'
 gem 'vlad-git', '2.2.0'<% end %>
 
 group :development do
-  gem 'shotgun'
+  gem 'mr-sparkle'
 end
 
-# gem (RUBY_VERSION =~ /^1.9/) ? 'ruby-debug19': 'ruby-debug'
+# gem 'debugger'

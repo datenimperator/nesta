@@ -2,10 +2,10 @@ module Nesta
   module Navigation
     module Renderers
       def display_menu(menu, options = {})
-        defaults = { :class => nil, :levels => 2 }
+        defaults = { class: nil, levels: 2 }
         options = defaults.merge(options)
         if options[:levels] > 0
-          haml_tag :ul, :class => options[:class] do
+          haml_tag :ul, class: options[:class] do
             menu.each do |item|
               display_menu_item(item, options)
             end
@@ -17,7 +17,7 @@ module Nesta
         if has_subitems?(item)
           if (options[:levels] - 1) > 0
             haml_tag :li do
-              display_menu(item, :levels => (options[:levels] - 1))
+              display_menu(item, levels: (options[:levels] - 1))
             end
           end
         else
@@ -25,7 +25,7 @@ module Nesta
           html_class << parent_menu_item_class if parent_item?(item)
           html_class << current_menu_item_class if current_item?(item)
           haml_tag :li, :class => html_class.join(' ') do
-            haml_tag :a, :<, :href => path_to(item.abspath) do
+            haml_tag :a, :<, href: path_to(item.abspath) do
               haml_concat link_text(item)
             end
           end
@@ -43,17 +43,17 @@ module Nesta
       end
 
       def display_breadcrumbs(options = {})
-        haml_tag :ul, :class => options[:class] do
+        haml_tag :ul, class: options[:class] do
           breadcrumb_ancestors[0...-1].each do |page|
             haml_tag :li do
-              haml_tag :a, :<, :href => path_to(page.abspath), :itemprop => 'url' do
-                haml_tag :span, :<, :itemprop => 'title' do
+              haml_tag :a, :<, href: path_to(page.abspath), itemprop: 'url' do
+                haml_tag :span, :<, itemprop: 'title' do
                   haml_concat link_text(page)
                 end
               end
             end
           end
-          haml_tag(:li, :class => current_breadcrumb_class) do
+          haml_tag(:li, class: current_breadcrumb_class) do
             haml_concat link_text(@page)
           end
         end
