@@ -7,6 +7,7 @@ module Nesta
     @settings = %w[
       cache
       content
+      handle_assets
       disqus_short_name
       google_analytics_code
       read_more

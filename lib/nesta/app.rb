@@ -85,8 +85,8 @@ module Nesta
           xml.subtitle @subtitle, :type=>'text'
           xml.generator "Nesta", :uri=>'http://nestacms.com'
           xml.id atom_id
-          xml.link :href=>path_to('/articles.xml', true), :rel=>'self'
-          xml.link :href=>path_to('/', true), :rel=>'alternate'
+          xml.link :href=>path_to('/articles.xml', uri:true), :rel=>'self'
+          xml.link :href=>path_to('/', uri:true), :rel=>'alternate'
           xml.updated last_updated.xmlschema
           unless @author.nil? || @author.empty?
             xml.author do
@@ -101,7 +101,7 @@ module Nesta
               xml.title article.heading
 	      xml.updated article.last_modified.xmlschema
               xml.published article.date.xmlschema
-              xml.link :href => path_to(article.path, true), :rel => 'alternate'
+              xml.link :href => path_to(article.path, uri:true), :rel => 'alternate'
               xml.summary article.summary, :type=>'html'
               xml.content absolute_urls(article.body(self)), :type=>'html'
               article.categories.each do |category|
